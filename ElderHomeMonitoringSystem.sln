@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElderHomeMonitoringSystem", "ElderHomeMonitoringSystem\ElderHomeMonitoringSystem.csproj", "{50D5A02D-3376-42EB-AA6D-05962FB13244}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{50D5A02D-3376-42EB-AA6D-05962FB13244}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50D5A02D-3376-42EB-AA6D-05962FB13244}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50D5A02D-3376-42EB-AA6D-05962FB13244}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50D5A02D-3376-42EB-AA6D-05962FB13244}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5D35611B-3D7E-49FD-B13A-7E2D5E29574B}
+	EndGlobalSection
+EndGlobal
