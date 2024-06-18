@@ -12,6 +12,6 @@ namespace ElderHomeMonitoringSystem.Models
 
         [JsonIgnore]
         public User? User { get; set; }
-        public int UserID { get; set; }
+        public int UserId { get; set; }
     }
 }
