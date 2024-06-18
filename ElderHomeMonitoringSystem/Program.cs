@@ -18,6 +18,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 });
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IMovementRepository, MovementRepository>();
 
 builder.Services.AddControllers(options =>
 {
