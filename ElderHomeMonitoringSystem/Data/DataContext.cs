@@ -14,6 +14,10 @@ namespace ElderHomeMonitoringSystem.Data
 
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<MovementLog> MovementLogs { get; set; }
+        public DbSet<Elder> Elders { get; set; }
+        public DbSet<ElderCares> ElderCares { get; set; }
+        public DbSet<SittingPosture> SittingPostures { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,7 +40,18 @@ namespace ElderHomeMonitoringSystem.Data
             .IsUnique();
 
             modelBuilder.Entity<ElderCares>()
-              .HasKey(ec => new { ec.UserId, ec.ElderId });
+                .HasOne(e => e.Elder)
+                .WithMany()
+                .HasForeignKey(e => e.ElderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ElderCares>()
+                .HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
         }
 
     }
