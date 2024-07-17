@@ -27,6 +27,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ISittingPostureRepository, SittingPostureRepository>();
 builder.Services.AddScoped<IMovementRepository, MovementRepository>();
 
 builder.Services.AddControllers(options =>

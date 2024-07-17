@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ElderHomeMonitoringSystem.Models;
 using ElderHomeMonitoringSystem.Data;
+using ElderHomeMonitoringSystem.Interfaces;
+using ElderHomeMonitoringSystem.DTOs;
 
 namespace ElderHomeMonitoringSystem.Controllers
 {
@@ -13,24 +15,24 @@ namespace ElderHomeMonitoringSystem.Controllers
     public class SittingPostureController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly ISittingPostureRepository _sittingPostureRepository;
 
-        public SittingPostureController(DataContext context)
+        public SittingPostureController(DataContext context, ISittingPostureRepository sittingPostureRepository)
         {
             _context = context;
+            _sittingPostureRepository = sittingPostureRepository;
         }
 
-        // GET: api/SittingPosture
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SittingPosture>>> GetSittingPostures()
         {
-            return await _context.SittingPostures.ToListAsync();
+            return await _sittingPostureRepository.GetAllPosturesAsync();
         }
 
-        // GET: api/SittingPosture/5
         [HttpGet("{id}")]
         public async Task<ActionResult<SittingPosture>> GetSittingPosture(int id)
         {
-            var sittingPosture = await _context.SittingPostures.FindAsync(id);
+            var sittingPosture = await _sittingPostureRepository.GetPostureByIdAsync(id);
 
             if (sittingPosture == null)
             {
@@ -40,65 +42,146 @@ namespace ElderHomeMonitoringSystem.Controllers
             return sittingPosture;
         }
 
-        // POST: api/SittingPosture
         [HttpPost]
-        public async Task<ActionResult<SittingPosture>> PostSittingPosture([FromBody]SittingPosture sittingPosture)
+        public async Task<ActionResult<SittingPosture>> PostSittingPosture([FromBody] SittingPosture sittingPosture)
         {
-            _context.SittingPostures.Add(sittingPosture);
-            await _context.SaveChangesAsync();
-
+            await _sittingPostureRepository.AddPostureAsync(sittingPosture);
             return CreatedAtAction("GetSittingPosture", new { id = sittingPosture.Id }, sittingPosture);
         }
 
-        // PUT: api/SittingPosture/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSittingPosture(int id, SittingPosture sittingPosture)
+        public async Task<IActionResult> PutSittingPosture(int id, [FromBody] SittingPosture sittingPosture)
         {
             if (id != sittingPosture.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(sittingPosture).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _sittingPostureRepository.UpdatePostureAsync(sittingPosture);
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SittingPostureExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/SittingPosture/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSittingPosture(int id)
-        {
-            var sittingPosture = await _context.SittingPostures.FindAsync(id);
-            if (sittingPosture == null)
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
+        }
 
-            _context.SittingPostures.Remove(sittingPosture);
-            await _context.SaveChangesAsync();
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSittingPosture(int id)
+        {
+            var deleted = await _sittingPostureRepository.DeletePostureAsync(id);
+            if (!deleted)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
 
-        private bool SittingPostureExists(int id)
+        /*private bool SittingPostureExists(int id)
         {
             return _context.SittingPostures.Any(e => e.Id == id);
+        }*/
+
+        [HttpPost("feedback")]
+        public async Task<IActionResult> GetRealTimeFeedbackAsync([FromBody] SittingPosture latestData)
+        {
+            try
+            {
+                var feedback = await _sittingPostureRepository.ProvideFeedbackAsync(latestData);
+                return Ok(new { Feedback = feedback });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Failed to provide feedback", error = ex.Message });
+            }
         }
+
+        [HttpGet("daily-summary/{userId}")]
+        public async Task<IActionResult> GetDailySummaryAsync(int userId)
+        {
+            try
+            {
+                var summary = await _sittingPostureRepository.GetDailySummaryAsync(userId);
+                return Ok(summary);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error getting daily summary", error = ex.Message });
+            }
+        }
+
+        [HttpGet("trends/{userId}")]
+        public async Task<IActionResult> GetTrendsAsync(int userId)
+        {
+            try
+            {
+                var trends = await _sittingPostureRepository.GetTrendsAsync(userId);
+                return Ok(trends);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error getting trends", error = ex.Message });
+            }
+        }
+        [HttpGet("statistics/{userId}")]
+        public async Task<ActionResult<PostureStatistics>> GetPostureStatistics(int userId)
+        {
+            return Ok(await _sittingPostureRepository.GetPostureStatisticsAsync(userId));
+        }
+
+        [HttpGet("statistics/{userId}/{period}")]
+        public async Task<ActionResult<PostureStatistics>> GetFilteredPostureStatistics(int userId, string period)
+        {
+            return Ok(await _sittingPostureRepository.GetFilteredPostureStatisticsAsync(userId, period));
+        }
+
+        [HttpGet("statisticsByDate/{startDate}/{endDate}")]
+        public async Task<IActionResult> GetPostureStatisticsByDateRange(DateTime startDate, DateTime endDate)
+        {
+            if (endDate < startDate)
+            {
+                return BadRequest("End date must be greater than or equal to start date.");
+            }
+
+            try
+            {
+                var statistics = await _sittingPostureRepository.GetStatisticsByDateRangeAsync(startDate, endDate);
+                return Ok(statistics);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error processing request", error = ex.Message });
+            }
+        }
+
+
+        [HttpGet("statistics")]
+        public async Task<IActionResult> GetAllPostureStatistics()
+        {
+            try
+            {
+                var statistics = await _sittingPostureRepository.GetAllStatisticsAsync();
+                return Ok(statistics);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error processing request", error = ex.Message });
+            }
+        }
+        /*        [HttpGet("goals/{userId}")]
+                public async Task<ActionResult<PostureGoals>> GetGoals(int userId)
+                {
+                    return Ok(await _sittingPostureRepository.GetGoalsAsync(userId));
+                }
+
+                [HttpPut("goals/{userId}")]
+                public async Task<IActionResult> UpdateGoals(int userId, PostureGoals goals)
+                {
+                    await _sittingPostureRepository.UpdateGoalsAsync(userId, goals);
+                    return NoContent();
+                }*/
     }
 }
