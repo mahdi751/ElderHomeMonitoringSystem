@@ -22,6 +22,21 @@ namespace ElderHomeMonitoringSystem.Repository
         {
             return await _context.SittingPostures.ToListAsync();
         }
+        public async Task<IEnumerable<SittingPosture>> GetAll(DateTime startDate, DateTime endDate)
+        {
+            if (startDate > endDate)
+            {
+                throw new ArgumentException("Start date must be less than or equal to end date");
+            }
+
+            var postures = await _context.SittingPostures
+                .Where(p => p.Time >= startDate && p.Time <= endDate)
+                .ToListAsync();
+
+            return postures;
+        }
+
+
 
         public async Task<SittingPosture> GetPostureByIdAsync(int id)
         {

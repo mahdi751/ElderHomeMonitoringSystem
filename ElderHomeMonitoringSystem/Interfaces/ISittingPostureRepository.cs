@@ -5,6 +5,7 @@ namespace ElderHomeMonitoringSystem.Interfaces
 {
     public interface ISittingPostureRepository
     {
+        Task<IEnumerable<SittingPosture>> GetAll(DateTime startDate, DateTime endDate);
         Task<List<SittingPosture>> GetAllPosturesAsync();
         Task<SittingPosture> GetPostureByIdAsync(int id);
         Task AddPostureAsync(SittingPosture posture);

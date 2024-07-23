@@ -7,9 +7,13 @@ using ElderHomeMonitoringSystem.Models;
 using ElderHomeMonitoringSystem.Data;
 using ElderHomeMonitoringSystem.Interfaces;
 using ElderHomeMonitoringSystem.DTOs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace ElderHomeMonitoringSystem.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
     [Route("api/[controller]")]
     [ApiController]
     public class SittingPostureController : ControllerBase
@@ -183,5 +187,12 @@ namespace ElderHomeMonitoringSystem.Controllers
                     await _sittingPostureRepository.UpdateGoalsAsync(userId, goals);
                     return NoContent();
                 }*/
+
+        [HttpGet("GetPostureData/{startDate}/{endDate}")]
+        public async Task<IActionResult> GetPostureData(DateTime startDate, DateTime endDate)
+        {
+            var postures = await _sittingPostureRepository.GetAll(startDate, endDate);
+            return Ok(postures);
+        }
     }
 }

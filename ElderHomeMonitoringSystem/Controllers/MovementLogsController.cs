@@ -1,9 +1,13 @@
 ﻿using ElderHomeMonitoringSystem.Interfaces;
 using ElderHomeMonitoringSystem.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace ElderHomeMonitoringSystem.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
     [Route("api/[controller]")]
     [ApiController]
     public class MovementLogsController : Controller
