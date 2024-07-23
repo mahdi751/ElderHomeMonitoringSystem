@@ -6,6 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
 using ElderHomeMonitoringSystem.Exceptions;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace ElderHomeMonitoringSystem.Controllers
 {
@@ -14,10 +20,15 @@ namespace ElderHomeMonitoringSystem.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountRepository _accountRepository;
-
-        public AccountController(IAccountRepository accountRepository)
+        private readonly string _jwtSecret;
+        private readonly string _jwtIssuer;
+        private readonly string _jwtAudience;
+        public AccountController(IAccountRepository accountRepository, IConfiguration configuration)
         {
             _accountRepository = accountRepository;
+            _jwtSecret = configuration["JwtSettings:Key"];
+            _jwtIssuer = configuration["JwtSettings:Issuer"];
+            _jwtAudience = configuration["JwtSettings:Audience"];
         }
 
 
@@ -44,7 +55,9 @@ namespace ElderHomeMonitoringSystem.Controllers
                 }
             }
 
-            return Ok(user);
+            var token = GenerateJwtToken(user);
+
+            return Ok(new ResponseDTO { Token = token, UserId = user.UserID,FirstName = user.FirstName , LastName =user.LastName }); 
         }
 
         [HttpPost("register")]
@@ -97,7 +110,8 @@ namespace ElderHomeMonitoringSystem.Controllers
                 throw new Exception("Process interrupted! Couldn't add user");
             }
 
-            return Ok(user);
+            var token = GenerateJwtToken(user);
+            return Ok(new ResponseDTO { Token = token, UserId = user.UserID, FirstName = user.FirstName, LastName = user.LastName });
         }
 
         [HttpPost("forgetPassword")]
@@ -132,6 +146,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(user);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("User/{username}")]
         public async Task<ActionResult<int>> GetUserID(string username)
         {
@@ -143,6 +158,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return id;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("User/username/{id}")]
         public async Task<ActionResult<string>> GetUsernameID(int id)
         {
@@ -150,6 +166,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return username;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpDelete("Delete/{userid}")]
         public async Task<ActionResult<bool>> RemoveUser(int userid)
         {
@@ -160,6 +177,7 @@ namespace ElderHomeMonitoringSystem.Controllers
                 return BadRequest();
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpPut("Update")]
         public async Task<ActionResult<bool>> UpdateUser(User user)
         {
@@ -174,6 +192,30 @@ namespace ElderHomeMonitoringSystem.Controllers
             }
 
             return await _accountRepository.UpdateUser(user);
+        }
+
+        [NonAction]
+        public string GenerateJwtToken(User user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSecret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.GivenName, user.FirstName),
+                    new Claim(ClaimTypes.Surname, user.LastName),
+                    new Claim(ClaimTypes.Role, "User")
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                Issuer = _jwtIssuer,
+                Audience = _jwtAudience,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
     }
