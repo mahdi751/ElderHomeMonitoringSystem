@@ -156,6 +156,28 @@ namespace ElderHomeMonitoringSystem.Migrations
                     b.ToTable("SittingPostures");
                 });
 
+            modelBuilder.Entity("ElderHomeMonitoringSystem.Models.SleepSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("FromDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ToDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SleepSessions");
+                });
+
             modelBuilder.Entity("ElderHomeMonitoringSystem.Models.User", b =>
                 {
                     b.Property<int>("UserID")

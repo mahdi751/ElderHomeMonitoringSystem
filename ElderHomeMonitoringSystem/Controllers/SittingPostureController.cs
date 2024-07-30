@@ -84,10 +84,6 @@ namespace ElderHomeMonitoringSystem.Controllers
             return NoContent();
         }
 
-        /*private bool SittingPostureExists(int id)
-        {
-            return _context.SittingPostures.Any(e => e.Id == id);
-        }*/
 
         [HttpPost("feedback")]
         public async Task<IActionResult> GetRealTimeFeedbackAsync([FromBody] SittingPosture latestData)
