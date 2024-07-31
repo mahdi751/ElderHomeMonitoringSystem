@@ -80,11 +80,11 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(sleepSessions);
         }
 
-        [HttpGet("last")]
-        public async Task<ActionResult<SleepSession>> GetLastSleepSession()
+        [HttpGet("last/{userId}")]
+        public async Task<ActionResult<SleepSession>> GetLastSleepSession(int userId)
         {
             var sleepSessions = await _sleepSessionRepository.GetAllSleepSessionsAsync();
-            var lastSleepSession = sleepSessions.OrderByDescending(s => s.ToDate).FirstOrDefault();
+            var lastSleepSession = sleepSessions.Where(s => s.UserId == userId).OrderByDescending(s => s.ToDate).FirstOrDefault();
             if (lastSleepSession == null)
             {
                 return NotFound();
