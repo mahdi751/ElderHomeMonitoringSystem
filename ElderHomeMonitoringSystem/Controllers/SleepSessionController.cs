@@ -91,6 +91,17 @@ namespace ElderHomeMonitoringSystem.Controllers
             }
             return Ok(lastSleepSession);
         }
+        [HttpGet("date/{userId}/{date}")]
+        public async Task<ActionResult<SleepSession>> GetSleepSessionByDate(int userId, DateTime date)
+        {
+            var sleepSessions = await _sleepSessionRepository.GetAllSleepSessionsAsync();
+            var sleepSession = sleepSessions.FirstOrDefault(s => s.UserId == userId && s.FromDate.Date == date.Date);
+            if (sleepSession == null)
+            {
+                return NotFound();
+            }
+            return Ok(sleepSession);
+        }
 
     }
 }
