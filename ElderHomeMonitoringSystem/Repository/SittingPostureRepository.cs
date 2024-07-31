@@ -225,5 +225,36 @@ namespace ElderHomeMonitoringSystem.Repository
 
             return statistics;
         }
+
+        public async Task<IEnumerable<SittingPosture>> GetPosturesByDateAsync(DateTime date, int UserId)
+        {
+            var startDate = date.Date;
+            var endDate = startDate.AddDays(1);
+
+            var result =  await _context.SittingPostures
+                .Where(sp => sp.Time >= startDate && sp.Time < endDate && sp.UserID == UserId)
+                .ToListAsync();
+
+            return result;
+        }
+
+        public async Task<IEnumerable<SittingPosture>> GetPosturesByWeekAsync(DateTime startDate, int UserId)
+        {
+            var endDate = startDate.AddDays(7);
+            var result = await _context.SittingPostures
+                .Where(sp => sp.Time.Date >= startDate && sp.Time.Date < endDate && sp.UserID == UserId)
+                .ToListAsync();
+            return result;
+        }
+
+        public async Task<IEnumerable<SittingPosture>> GetPosturesByMonthAsync(int month, int year, int UserId)
+        {
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1);
+            var result = await _context.SittingPostures
+                .Where(sp => sp.Time >= startDate && sp.Time < endDate && sp.UserID == UserId)
+                .ToListAsync();
+            return result;
+        }
     }
 }

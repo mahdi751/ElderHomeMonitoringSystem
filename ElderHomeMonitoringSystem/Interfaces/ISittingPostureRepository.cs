@@ -19,7 +19,9 @@ namespace ElderHomeMonitoringSystem.Interfaces
         Task<IEnumerable<PostureStatistics>> GetStatisticsByDateRangeAsync(DateTime startDate, DateTime endDate);
         Task<IEnumerable<PostureStatistics>> GetAllStatisticsAsync();
 
-/*        Task UpdateGoalsAsync(int userId, PostureGoals goals);
-        Task<PostureGoals> GetGoalsAsync(int userId);*/
+
+        Task<IEnumerable<SittingPosture>> GetPosturesByDateAsync(DateTime date,int UserId);
+        Task<IEnumerable<SittingPosture>> GetPosturesByWeekAsync(DateTime startDate, int UserId);
+        Task<IEnumerable<SittingPosture>> GetPosturesByMonthAsync(int month, int year, int UserId);
     }
 }

@@ -10,6 +10,7 @@ using ElderHomeMonitoringSystem.DTOs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using System.Globalization;
 
 namespace ElderHomeMonitoringSystem.Controllers
 {
@@ -171,24 +172,42 @@ namespace ElderHomeMonitoringSystem.Controllers
                 return StatusCode(500, new { message = "Error processing request", error = ex.Message });
             }
         }
-        /*        [HttpGet("goals/{userId}")]
-                public async Task<ActionResult<PostureGoals>> GetGoals(int userId)
-                {
-                    return Ok(await _sittingPostureRepository.GetGoalsAsync(userId));
-                }
-
-                [HttpPut("goals/{userId}")]
-                public async Task<IActionResult> UpdateGoals(int userId, PostureGoals goals)
-                {
-                    await _sittingPostureRepository.UpdateGoalsAsync(userId, goals);
-                    return NoContent();
-                }*/
 
         [HttpGet("GetPostureData/{startDate}/{endDate}")]
         public async Task<IActionResult> GetPostureData(DateTime startDate, DateTime endDate)
         {
             var postures = await _sittingPostureRepository.GetAll(startDate, endDate);
             return Ok(postures);
+        }
+
+        [HttpGet("daily/{date}/{UserId}")]
+        public async Task<ActionResult<IEnumerable<SittingPosture>>> GetDailyData(string date,int UserId)
+        {
+            if (!DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+                return BadRequest("Invalid date format. Please use yyyy-MM-dd format.");
+
+            var result = await _sittingPostureRepository.GetPosturesByDateAsync(parsedDate, UserId);
+            return Ok(result);
+        }
+
+        [HttpGet("weekly/{startDate}/{UserId}")]
+        public async Task<ActionResult<IEnumerable<SittingPosture>>> GetWeeklyData(string startDate, int UserId)
+        {
+            if (!DateTime.TryParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+                return BadRequest("Invalid date format. Please use yyyy-MM-dd format.");
+
+            var result = await _sittingPostureRepository.GetPosturesByWeekAsync(parsedDate, UserId);
+            return Ok(result);
+        }
+
+        [HttpGet("monthly/{month}/{year}/{UserId}")]
+        public async Task<ActionResult<IEnumerable<SittingPosture>>> GetMonthlyData(int month, int year, int UserId)
+        {
+            if (month < 1 || month > 12)
+                return BadRequest("Month must be between 1 and 12.");
+
+            var result = await _sittingPostureRepository.GetPosturesByMonthAsync(month, year, UserId);
+            return Ok(result);
         }
     }
 }

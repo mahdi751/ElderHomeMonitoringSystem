@@ -194,6 +194,20 @@ namespace ElderHomeMonitoringSystem.Controllers
             return await _accountRepository.UpdateUser(user);
         }
 
+        [HttpGet("IsUsernameUnique/{username}")]
+        public async Task<ActionResult<bool>> IsUsernameUnique(string username)
+        {
+            var response = await _accountRepository.UserExits(username);
+            return !response;
+        }
+
+        [HttpGet("IsEmailUnique/{email}")]
+        public async Task<ActionResult<bool>> IsEmailUnique(string email)
+        {
+            var response = await _accountRepository.EmailExists(email);
+            return !response;
+        }
+
         [NonAction]
         public string GenerateJwtToken(User user)
         {
