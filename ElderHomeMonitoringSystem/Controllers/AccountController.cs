@@ -104,6 +104,7 @@ namespace ElderHomeMonitoringSystem.Controllers
                 PasswordSalt = passwordSalt,
                 ProfileImage = newUserDto.ProfileImage,
                 Activated = false,
+                MacAddress = ""
             };
 
             if (!await _accountRepository.AddUser(user))
@@ -208,6 +209,34 @@ namespace ElderHomeMonitoringSystem.Controllers
             var response = await _accountRepository.EmailExists(email);
             return !response;
         }
+
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
+        [HttpGet("Not-activated")]
+        public async Task<IActionResult> GetNonActivatedUsers()
+        {
+            var users = await _accountRepository.GetNotActivated();
+            return Ok(users);
+        }
+
+/*
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]*/
+        [HttpPost("Activate/{userId}/{macAddress}")]
+        public async Task<IActionResult> ActivateUserAsync(int userId, string macAddress)
+        {
+            var user = await _accountRepository.GetUserByID(userId);
+            if (user == null)
+            {
+                return NotFound(user);
+            }
+
+            user.MacAddress = macAddress;
+            user.Activated = true;
+            await _accountRepository.UpdateUser(user);
+
+            return Ok();
+        }
+
 
         [NonAction]
         public string GenerateJwtToken(User user)

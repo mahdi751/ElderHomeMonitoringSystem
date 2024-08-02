@@ -75,6 +75,11 @@ namespace ElderHomeMonitoringSystem.Repository
             _context.Users.Remove(user);
             return await Save();
         }
+
+        public async Task<IEnumerable<User>> GetNotActivated()
+        {
+            return await _context.Users.Where(u => !u.Activated).ToListAsync();
+        }
         public async Task<bool> Save()
         {
             var saved = await _context.SaveChangesAsync();

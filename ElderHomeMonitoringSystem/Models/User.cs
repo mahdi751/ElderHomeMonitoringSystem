@@ -21,6 +21,7 @@ namespace ElderHomeMonitoringSystem.Models
         public string Phone { get; set; }
         public byte[] ProfileImage { get; set; }
         public bool Activated { get; set; }
+        public string MacAddress { get; set; }
 
     }
 }
