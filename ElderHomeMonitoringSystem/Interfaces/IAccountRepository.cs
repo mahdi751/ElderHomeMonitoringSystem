@@ -15,6 +15,7 @@ namespace ElderHomeMonitoringSystem.Interfaces
         public Task<bool> EmailExists(User user);
         public Task<User> GetUserByID(int userid);
         public Task<bool> RemoveUser(User user);
+        public Task<IEnumerable<User>> GetNotActivated();
         public Task<bool> Save();
     }
 }

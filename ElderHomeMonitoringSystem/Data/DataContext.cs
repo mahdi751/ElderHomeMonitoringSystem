@@ -28,6 +28,10 @@ namespace ElderHomeMonitoringSystem.Data
             .HasIndex(u => u.MacAddress)
             .IsUnique();
 
+            modelBuilder.Entity<User>()
+            .HasIndex(u => u.MacAddress)
+            .IsUnique();
+
             modelBuilder.Entity<Elder>()
             .HasIndex(u => u.ElderCode)
             .IsUnique();
