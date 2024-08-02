@@ -209,5 +209,35 @@ namespace ElderHomeMonitoringSystem.Controllers
             var result = await _sittingPostureRepository.GetPosturesByMonthAsync(month, year, UserId);
             return Ok(result);
         }
+
+        [HttpGet("daily-good-posture-percentage/{date}/{UserId}")]
+        public async Task<IActionResult> GetDailyGoodPosturePercentage(string date, int UserId)
+        {
+            if (!DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+                return BadRequest("Invalid date format. Please use yyyy-MM-dd format.");
+
+            var percentage = await _sittingPostureRepository.GetDailyGoodPosturePercentage(parsedDate, UserId);
+            return Ok(percentage);
+        }
+
+        [HttpGet("weekly-good-posture-percentage/{startDate}/{UserId}")]
+        public async Task<IActionResult> GetWeeklyGoodPosturePercentage(string startDate, int UserId)
+        {
+            if (!DateTime.TryParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+                return BadRequest("Invalid date format. Please use yyyy-MM-dd format.");
+
+            var percentage = await _sittingPostureRepository.GetWeeklyGoodPosturePercentage(parsedDate, UserId);
+            return Ok(percentage);
+        }
+
+        [HttpGet("monthly-good-posture-percentage/{month}/{year}/{UserId}")]
+        public async Task<IActionResult> GetMonthlyGoodPosturePercentage(int month, int year, int UserId)
+        {
+            if (month < 1 || month > 12)
+                return BadRequest("Month must be between 1 and 12.");
+
+            var percentage = await _sittingPostureRepository.GetMonthlyGoodPosturePercentage(month,year,UserId);
+            return Ok(percentage);
+        }
     }
 }

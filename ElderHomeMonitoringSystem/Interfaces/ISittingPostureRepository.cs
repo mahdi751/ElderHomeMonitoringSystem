@@ -23,5 +23,8 @@ namespace ElderHomeMonitoringSystem.Interfaces
         Task<IEnumerable<SittingPosture>> GetPosturesByDateAsync(DateTime date,int UserId);
         Task<IEnumerable<SittingPosture>> GetPosturesByWeekAsync(DateTime startDate, int UserId);
         Task<IEnumerable<SittingPosture>> GetPosturesByMonthAsync(int month, int year, int UserId);
+        Task<double> GetDailyGoodPosturePercentage(DateTime date, int UserId);
+        Task<double> GetWeeklyGoodPosturePercentage(DateTime startDate, int UserId);
+        Task<double> GetMonthlyGoodPosturePercentage(int month, int year, int UserId);
     }
 }

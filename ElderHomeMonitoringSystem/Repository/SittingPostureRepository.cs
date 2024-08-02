@@ -256,5 +256,54 @@ namespace ElderHomeMonitoringSystem.Repository
                 .ToListAsync();
             return result;
         }
+
+        public async Task<double> GetDailyGoodPosturePercentage(DateTime date, int userId)
+        {
+            var postures = await _context.SittingPostures
+                .Where(p => p.UserID == userId && p.Time.Date == date.Date)
+                .ToListAsync();
+
+            if (!postures.Any())
+                return 0;
+
+            var totalDuration = postures.Sum(p => p.PostureDuration);
+            var goodPostureDuration = postures.Where(p => p.GoodPosture).Sum(p => p.PostureDuration);
+
+            return totalDuration == 0 ? 0 : Math.Round((double)goodPostureDuration / totalDuration * 100, 2);
+        }
+
+        public async Task<double> GetWeeklyGoodPosturePercentage(DateTime startDate, int userId)
+        {
+            var endDate = startDate.AddDays(7);
+            var postures = await _context.SittingPostures
+                .Where(p => p.UserID == userId && p.Time.Date >= startDate.Date && p.Time.Date < endDate.Date)
+                .ToListAsync();
+
+            if (!postures.Any())
+                return 0;
+
+            var totalDuration = postures.Sum(p => p.PostureDuration);
+            var goodPostureDuration = postures.Where(p => p.GoodPosture).Sum(p => p.PostureDuration);
+
+            return totalDuration == 0 ? 0 : Math.Round((double)goodPostureDuration / totalDuration * 100, 2);
+        }
+
+        public async Task<double> GetMonthlyGoodPosturePercentage(int month, int year, int userId)
+        {
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1);
+            var postures = await _context.SittingPostures
+                .Where(p => p.UserID == userId && p.Time >= startDate && p.Time < endDate)
+                .ToListAsync();
+
+            if (!postures.Any())
+                return 0;
+
+            var totalDuration = postures.Sum(p => p.PostureDuration);
+            var goodPostureDuration = postures.Where(p => p.GoodPosture).Sum(p => p.PostureDuration);
+
+            return totalDuration == 0 ? 0 : Math.Round((double)goodPostureDuration / totalDuration * 100, 2);
+        }
+
     }
 }
