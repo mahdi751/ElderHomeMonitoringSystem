@@ -20,6 +20,7 @@ namespace ElderHomeMonitoringSystem.Models
         public string Email { get; set; }
         public string Phone { get; set; }
         public byte[] ProfileImage { get; set; }
+        public bool Activated { get; set; }
 
     }
 }
