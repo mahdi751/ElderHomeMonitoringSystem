@@ -148,6 +148,52 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(user);
         }
 
+        [HttpPost("resetPassword")]
+        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> resetPassword([FromBody] ResetPasswordDTO resetPassword)
+        {
+            if (resetPassword == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _accountRepository.GetUserByUsername(resetPassword.Username);
+            if (user == null)
+            {
+                throw new AccountExceptions.UserNotFoundException("User not found");
+            }
+
+            byte[] oldPasswordHash;
+            using (var hmac = new HMACSHA512(user.PasswordSalt))
+            {
+                oldPasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(resetPassword.OldPassword));
+            }
+
+            for (int i = 0; i < oldPasswordHash.Length; i++)
+            {
+                if (oldPasswordHash[i] != user.PasswordHash[i])
+                {
+                    return BadRequest("Old password is incorrect");
+                }
+            }
+
+            byte[] newPasswordHash;
+            using (var hmac = new HMACSHA512(user.PasswordSalt))
+            {
+                newPasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(resetPassword.NewPassword));
+            }
+
+            user.PasswordHash = newPasswordHash;
+
+            if (!await _accountRepository.UpdateUser(user))
+            {
+                throw new Exception("Process interrupted! Couldn't update user password");
+            }
+
+            return Ok(user);
+        }
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("User/{username}")]
         public async Task<ActionResult<int>> GetUserID(string username)
