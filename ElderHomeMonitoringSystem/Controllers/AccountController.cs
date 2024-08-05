@@ -207,6 +207,14 @@ namespace ElderHomeMonitoringSystem.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
+        [HttpGet("User/UserById/{id}")]
+        public async Task<ActionResult<User>> GetUserById(int id)
+        {
+            var user = await _accountRepository.GetUserByID(id);
+            return user;
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("UserProfileImage/{UserId}")]
         public async Task<ActionResult<string>> GetUserImage(int UserId)
         {
