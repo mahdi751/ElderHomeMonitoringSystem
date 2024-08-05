@@ -208,6 +208,22 @@ namespace ElderHomeMonitoringSystem.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
+        [HttpGet("UserProfileImage/{UserId}")]
+        public async Task<ActionResult<string>> GetUserImage(int UserId)
+        {
+            var response = await _accountRepository.GetUserImage(UserId);
+
+            var base64Image = Convert.ToBase64String(response);
+            if (base64Image.Length == 0)
+            {
+                return Ok(null);
+            }
+            var dataUri = $"data:image/jpeg;base64,{base64Image}";
+
+            return Ok(dataUri);
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("User/username/{id}")]
         public async Task<ActionResult<string>> GetUsernameID(int id)
         {
