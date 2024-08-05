@@ -7,5 +7,6 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool Activated { get; set; }
+        public bool isAdmin { get; set; }
     }
 }

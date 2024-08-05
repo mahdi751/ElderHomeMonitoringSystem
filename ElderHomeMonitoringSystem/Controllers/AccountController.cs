@@ -57,7 +57,7 @@ namespace ElderHomeMonitoringSystem.Controllers
 
             var token = GenerateJwtToken(user);
 
-            return Ok(new ResponseDTO { Token = token, UserId = user.UserID,FirstName = user.FirstName , LastName =user.LastName, Activated =user.Activated}); 
+            return Ok(new ResponseDTO { Token = token, UserId = user.UserID,FirstName = user.FirstName , LastName =user.LastName, Activated =user.Activated, isAdmin = user.isAdmin}); 
         }
 
         [HttpPost("register")]
@@ -104,7 +104,8 @@ namespace ElderHomeMonitoringSystem.Controllers
                 PasswordSalt = passwordSalt,
                 ProfileImage = newUserDto.ProfileImage,
                 Activated = false,
-                MacAddress = ""
+                MacAddress = null,
+                isAdmin = false
             };
 
             if (!await _accountRepository.AddUser(user))
