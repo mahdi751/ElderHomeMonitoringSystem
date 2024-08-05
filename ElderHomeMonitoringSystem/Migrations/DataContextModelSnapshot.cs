@@ -206,7 +206,6 @@ namespace ElderHomeMonitoringSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MacAddress")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<byte[]>("PasswordHash")
@@ -229,13 +228,17 @@ namespace ElderHomeMonitoringSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("isAdmin")
+                        .HasColumnType("bit");
+
                     b.HasKey("UserID");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
                     b.HasIndex("MacAddress")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[MacAddress] IS NOT NULL");
 
                     b.HasIndex("Username")
                         .IsUnique();
