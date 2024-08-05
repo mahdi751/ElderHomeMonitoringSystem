@@ -5,6 +5,7 @@ namespace ElderHomeMonitoringSystem.Interfaces
     public interface IAccountRepository
     {
         public Task<User> GetUserByUsername(string username);
+        Task<byte[]> GetUserImage(int userId);
         public Task<int> GetUserIDByUsername(string username);
         public Task<string> GetUsernamaByID(int id);
         public Task<bool> AddUser(User user);

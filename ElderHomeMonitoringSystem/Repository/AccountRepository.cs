@@ -82,6 +82,11 @@ namespace ElderHomeMonitoringSystem.Repository
             }
         }
 
+        public async Task<byte[]> GetUserImage(int userId)
+        {
+            return _context.Users.Where(u => u.UserID == userId).Select(u => u.ProfileImage).FirstOrDefault();
+        }
+
         public async Task<bool> EmailExists(User user)
         {
             try
