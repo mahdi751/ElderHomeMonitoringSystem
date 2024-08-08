@@ -9,7 +9,6 @@ using ElderHomeMonitoringSystem.Models;
 
 namespace ElderHomeMonitoringSystem.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
     [Route("api/[controller]")]
     [ApiController]
     public class SleepSessionsController : ControllerBase
@@ -21,6 +20,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             _sleepSessionRepository = sleepSessionRepository;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SleepSession>>> GetAllSleepSessions()
         {
@@ -28,6 +28,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(sleepSessions);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("{id}")]
         public async Task<ActionResult<SleepSession>> GetSleepSessionById(int id)
         {
@@ -62,6 +63,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return NoContent();
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteSleepSession(int id)
         {
@@ -73,6 +75,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return NoContent();
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("range")]
         public async Task<ActionResult<IEnumerable<SleepSession>>> GetSleepSessionsByDateRange(DateTime startDate, DateTime endDate)
         {
@@ -80,6 +83,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(sleepSessions);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("last/{userId}")]
         public async Task<ActionResult<SleepSession>> GetLastSleepSession(int userId)
         {
@@ -91,6 +95,8 @@ namespace ElderHomeMonitoringSystem.Controllers
             }
             return Ok(lastSleepSession);
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("date/{userId}/{date}")]
         public async Task<ActionResult<SleepSession>> GetSleepSessionByDate(int userId, DateTime date)
         {

@@ -211,6 +211,15 @@ namespace ElderHomeMonitoringSystem.Controllers
             return id;
         }
 
+
+        [HttpGet("User/GetUserIdByMac/{Macaddress}")]
+        public async Task<ActionResult<int>> GetUserIdByMac(string Macaddress)
+        {
+            var id = await _accountRepository.GetUserIdByMac(Macaddress);
+            return id;
+        }
+
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("User/UserById/{id}")]
         public async Task<ActionResult<User>> GetUserById(int id)

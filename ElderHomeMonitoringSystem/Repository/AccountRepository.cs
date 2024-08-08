@@ -42,6 +42,20 @@ namespace ElderHomeMonitoringSystem.Repository
                 throw;
             }
         }
+        public async Task<int> GetUserIdByMac(string Macadress)
+        {
+            try
+            {
+                return await _context.Users.Where(u => u.MacAddress == Macadress)
+                                           .Select(u => u.UserID)
+                                           .FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetUserIdByMac: {ex.Message}");
+                throw;
+            }
+        }
 
         public async Task<bool> UserExits(User user)
         {

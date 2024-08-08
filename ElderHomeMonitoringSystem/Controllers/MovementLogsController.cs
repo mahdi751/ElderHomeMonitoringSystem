@@ -12,7 +12,6 @@ using ElderHomeMonitoringSystem.Data;
 
 namespace ElderHomeMonitoringSystem.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
     [Route("api/[controller]")]
     [ApiController]
     public class MovementLogsController : Controller
@@ -28,6 +27,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             _context = context;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovementLog>>> GetMovementLogs()
         {
@@ -35,6 +35,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(movementLogs);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("{id}")]
         public async Task<ActionResult<MovementLog>> GetMovementLog(int id)
         {
@@ -47,6 +48,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(movementLog);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("GetByUser/{id}")]
         public async Task<ActionResult<IEnumerable<MovementLog>>> GetMovementByUserId(int id)
         {
@@ -78,6 +80,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return NoContent();
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovementLog(int id)
         {
@@ -91,6 +94,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return NoContent();
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("GetBySleepSession/{sleepSessionId}")]
         public async Task<ActionResult<IEnumerable<MovementLog>>> GetMovementsBySleepSession(int sleepSessionId)
         {

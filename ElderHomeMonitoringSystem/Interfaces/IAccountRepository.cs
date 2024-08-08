@@ -7,6 +7,7 @@ namespace ElderHomeMonitoringSystem.Interfaces
         public Task<User> GetUserByUsername(string username);
         Task<byte[]> GetUserImage(int userId);
         public Task<int> GetUserIDByUsername(string username);
+        public Task<int> GetUserIdByMac(string Macadress);
         public Task<string> GetUsernamaByID(int id);
         public Task<bool> AddUser(User user);
         public Task<bool> UpdateUser(User user);

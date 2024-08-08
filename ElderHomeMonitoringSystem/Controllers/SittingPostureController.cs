@@ -14,7 +14,6 @@ using System.Globalization;
 
 namespace ElderHomeMonitoringSystem.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
     [Route("api/[controller]")]
     [ApiController]
     public class SittingPostureController : ControllerBase
@@ -28,12 +27,14 @@ namespace ElderHomeMonitoringSystem.Controllers
             _sittingPostureRepository = sittingPostureRepository;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SittingPosture>>> GetSittingPostures()
         {
             return await _sittingPostureRepository.GetAllPosturesAsync();
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("{id}")]
         public async Task<ActionResult<SittingPosture>> GetSittingPosture(int id)
         {
@@ -74,6 +75,7 @@ namespace ElderHomeMonitoringSystem.Controllers
         }
 
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSittingPosture(int id)
         {
@@ -100,6 +102,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             }
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("daily-summary/{userId}")]
         public async Task<IActionResult> GetDailySummaryAsync(int userId)
         {
@@ -114,6 +117,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             }
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("trends/{userId}")]
         public async Task<IActionResult> GetTrendsAsync(int userId)
         {
@@ -127,18 +131,22 @@ namespace ElderHomeMonitoringSystem.Controllers
                 return StatusCode(500, new { message = "Error getting trends", error = ex.Message });
             }
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("statistics/{userId}")]
         public async Task<ActionResult<PostureStatistics>> GetPostureStatistics(int userId)
         {
             return Ok(await _sittingPostureRepository.GetPostureStatisticsAsync(userId));
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("statistics/{userId}/{period}")]
         public async Task<ActionResult<PostureStatistics>> GetFilteredPostureStatistics(int userId, string period)
         {
             return Ok(await _sittingPostureRepository.GetFilteredPostureStatisticsAsync(userId, period));
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("statisticsByDate/{startDate}/{endDate}")]
         public async Task<IActionResult> GetPostureStatisticsByDateRange(DateTime startDate, DateTime endDate)
         {
@@ -159,6 +167,7 @@ namespace ElderHomeMonitoringSystem.Controllers
         }
 
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("statistics")]
         public async Task<IActionResult> GetAllPostureStatistics()
         {
@@ -173,6 +182,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             }
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("GetPostureData/{startDate}/{endDate}")]
         public async Task<IActionResult> GetPostureData(DateTime startDate, DateTime endDate)
         {
@@ -180,6 +190,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(postures);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("daily/{date}/{UserId}")]
         public async Task<ActionResult<IEnumerable<SittingPosture>>> GetDailyData(string date,int UserId)
         {
@@ -190,6 +201,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(result);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("weekly/{startDate}/{UserId}")]
         public async Task<ActionResult<IEnumerable<SittingPosture>>> GetWeeklyData(string startDate, int UserId)
         {
@@ -200,6 +212,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(result);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("monthly/{month}/{year}/{UserId}")]
         public async Task<ActionResult<IEnumerable<SittingPosture>>> GetMonthlyData(int month, int year, int UserId)
         {
@@ -210,6 +223,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(result);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("daily-good-posture-percentage/{date}/{UserId}")]
         public async Task<IActionResult> GetDailyGoodPosturePercentage(string date, int UserId)
         {
@@ -220,6 +234,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(percentage);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("weekly-good-posture-percentage/{startDate}/{UserId}")]
         public async Task<IActionResult> GetWeeklyGoodPosturePercentage(string startDate, int UserId)
         {
@@ -230,6 +245,7 @@ namespace ElderHomeMonitoringSystem.Controllers
             return Ok(percentage);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("monthly-good-posture-percentage/{month}/{year}/{UserId}")]
         public async Task<IActionResult> GetMonthlyGoodPosturePercentage(int month, int year, int UserId)
         {
