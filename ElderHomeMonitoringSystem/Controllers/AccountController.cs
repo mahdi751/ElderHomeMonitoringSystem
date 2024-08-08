@@ -212,6 +212,14 @@ namespace ElderHomeMonitoringSystem.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
+        [HttpGet("User/UserById/{id}")]
+        public async Task<ActionResult<User>> GetUserById(int id)
+        {
+            var user = await _accountRepository.GetUserByID(id);
+            return user;
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpGet("UserProfileImage/{UserId}")]
         public async Task<ActionResult<string>> GetUserImage(int UserId)
         {
@@ -248,19 +256,38 @@ namespace ElderHomeMonitoringSystem.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
         [HttpPut("Update")]
-        public async Task<ActionResult<bool>> UpdateUser(User user)
+        public async Task<ActionResult<bool>> UpdateUser([FromBody] UpdateDTO updateDto)
         {
-            if (await _accountRepository.UserExits(user))
+            try
             {
-                throw new AccountExceptions.UsernameTakenException("Username is taken!");
-            }
+                var user = await _accountRepository.GetUserByID(updateDto.userID);
 
-            if (await _accountRepository.EmailExists(user))
+                if (user == null)
+                {
+                    return NotFound("User not found");
+                }
+
+                user.FirstName = updateDto.firstName;
+                user.LastName = updateDto.lastName;
+                user.Address = updateDto.address;
+                user.Phone = updateDto.phone;
+                user.ProfileImage = updateDto.profileImage;
+
+                var result = await _accountRepository.UpdateUser(user);
+                if (result)
+                {
+                    return Ok(new { message = "Profile updated successfully" });
+                }
+                else
+                {
+                    return StatusCode(500, new { message = "Error updating user" });
+                }
+            }
+            catch (Exception ex)
             {
-                throw new AccountExceptions.EmailTakenException("Email already in use for another account!");
+                // Log the exception
+                return StatusCode(500, new { message = ex.Message });
             }
-
-            return await _accountRepository.UpdateUser(user);
         }
 
         [HttpGet("IsUsernameUnique/{username}")]
