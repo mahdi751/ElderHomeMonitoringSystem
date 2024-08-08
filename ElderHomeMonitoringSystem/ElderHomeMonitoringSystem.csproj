@@ -24,4 +24,6 @@
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="6.0.0" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="https://json.schemastore.org/lerna.json" /></VisualStudio></ProjectExtensions>
+
 </Project>
