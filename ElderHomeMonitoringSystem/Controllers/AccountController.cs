@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ElderHomeMonitoringSystem.Controllers
 {
@@ -23,12 +24,15 @@ namespace ElderHomeMonitoringSystem.Controllers
         private readonly string _jwtSecret;
         private readonly string _jwtIssuer;
         private readonly string _jwtAudience;
-        public AccountController(IAccountRepository accountRepository, IConfiguration configuration)
+        private readonly IHubContext<AlertHub> _hubContext;
+
+        public AccountController(IAccountRepository accountRepository, IConfiguration configuration, IHubContext<AlertHub> hubContext)
         {
             _accountRepository = accountRepository;
             _jwtSecret = configuration["JwtSettings:Key"];
             _jwtIssuer = configuration["JwtSettings:Issuer"];
             _jwtAudience = configuration["JwtSettings:Audience"];
+            _hubContext = hubContext;
         }
 
 
@@ -323,6 +327,27 @@ namespace ElderHomeMonitoringSystem.Controllers
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        [HttpPost("sendTestNotification")]
+        public async Task<IActionResult> SendTestNotification([FromQuery] int userId, [FromQuery] string messageContent)
+        {
+            var connectedUsers = AlertHub.GetConnectedUsers();
+            Console.WriteLine($"Connected users: {string.Join(", ", connectedUsers)}");
+
+            var connectionIds = AlertHub.ConnectedUsers.Where(kvp => kvp.Value == userId.ToString()).Select(kvp => kvp.Key).ToList();
+            if (connectionIds.Count > 0)
+            {
+                foreach (var connectionId in connectionIds)
+                {
+                    await _hubContext.Clients.Client(connectionId).SendAsync("ReceiveNotification", messageContent);
+                }
+                return Ok($"Test notification sent to user {userId} with content: {messageContent}");
+            }
+            else
+            {
+                return NotFound($"User {userId} is not connected.");
+            }
         }
 
     }

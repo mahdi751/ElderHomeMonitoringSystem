@@ -1,6 +1,7 @@
 using ElderHomeMonitoringSystem.Data;
 using ElderHomeMonitoringSystem.Exceptions;
 using ElderHomeMonitoringSystem.Interfaces;
+using ElderHomeMonitoringSystem.Models;
 using ElderHomeMonitoringSystem.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -79,7 +80,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddAuthorization();
-
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -91,7 +92,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAnyOrigin");
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
+app.MapHub<AlertHub>("/alerthub");
 app.UseAuthorization();
 
 app.MapControllers();
