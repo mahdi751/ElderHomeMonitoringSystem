@@ -33,6 +33,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ISittingPostureRepository, SittingPostureRepository>();
 builder.Services.AddScoped<IMovementRepository, MovementRepository>();
 builder.Services.AddScoped<ISleepSessionRepository, SleepSessionRepository>();
+builder.Services.AddScoped<ISleepPositionRepository, SleepPositionRepository>();
 
 builder.Services.AddControllers(options =>
 {

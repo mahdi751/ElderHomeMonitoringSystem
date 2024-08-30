@@ -12,5 +12,6 @@ namespace ElderHomeMonitoringSystem.DTOs
         public string Email { get; set; }
         public string Phone { get; set; }
         public byte[] ProfileImage { get; set; }
+        public string Disability { get; set; }
     }
 }

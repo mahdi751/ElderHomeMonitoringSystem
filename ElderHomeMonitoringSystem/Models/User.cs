@@ -23,6 +23,7 @@ namespace ElderHomeMonitoringSystem.Models
         public bool Activated { get; set; }
         public string? MacAddress { get; set; }
         public bool isAdmin { get; set; }
+        public string Disability { get; set; }
 
     }
 }

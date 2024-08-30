@@ -156,6 +156,29 @@ namespace ElderHomeMonitoringSystem.Migrations
                     b.ToTable("SittingPostures");
                 });
 
+            modelBuilder.Entity("ElderHomeMonitoringSystem.Models.SleepPosition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("AtTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SleepPositions");
+                });
+
             modelBuilder.Entity("ElderHomeMonitoringSystem.Models.SleepSession", b =>
                 {
                     b.Property<int>("Id")
@@ -190,6 +213,10 @@ namespace ElderHomeMonitoringSystem.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Disability")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

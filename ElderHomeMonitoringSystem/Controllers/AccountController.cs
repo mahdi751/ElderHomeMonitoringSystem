@@ -109,7 +109,8 @@ namespace ElderHomeMonitoringSystem.Controllers
                 ProfileImage = newUserDto.ProfileImage,
                 Activated = false,
                 MacAddress = null,
-                isAdmin = false
+                isAdmin = false,
+                Disability = newUserDto.Disability
             };
 
             if (!await _accountRepository.AddUser(user))
@@ -385,6 +386,8 @@ namespace ElderHomeMonitoringSystem.Controllers
                 return NotFound($"User {userId} is not connected.");
             }
         }
+
+
 
     }
 }

@@ -19,6 +19,7 @@ namespace ElderHomeMonitoringSystem.Data
         public DbSet<ElderCares> ElderCares { get; set; }
         public DbSet<SittingPosture> SittingPostures { get; set; }
         public DbSet<SleepSession> SleepSessions { get; set; }
+        public DbSet<SleepPosition> SleepPositions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
